@@ -94,9 +94,11 @@ public class MainActivity extends ActionBarActivity {
                     // retrieve a collection of selected images
                     ArrayList<Parcelable> list = data.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
                     // iterate over these images
-                    for (Parcelable parcel : list) { // TODO avoid nullpointers here
-                        Uri uri = (Uri) parcel;
-                        // handle the images one by one here
+                    if( list != null ) {
+                        for (Parcelable parcel : list) {
+                            Uri uri = (Uri) parcel;
+                            // handle the images one by one here
+                        }
                     }
 
                     // for now just show the last picture
