@@ -7,4 +7,5 @@
     <string name="lbl_pick_multiple_image">Select multiple images</string>
     <string name="txt_info">Quick sample for selecting images on Android</string>
     <string name="msg_failed_to_get_intent_data">Failed to get intent data</string>
+    <string name="select_picture">Select Picture</string>
 </resources>

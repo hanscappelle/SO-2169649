@@ -27,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
 
     private static final int SELECT_MULTIPLE_PICTURE = 201;
 
-    private String selectedImagePath;
+    public static final String IMAGE_TYPE = "image/*";
 
     private ImageView selectedImagePreview;
 
@@ -45,10 +45,10 @@ public class MainActivity extends ActionBarActivity {
                 // in onCreate or any event where your want the user to
                 // select a file
                 Intent intent = new Intent();
-                intent.setType("image/*");
+                intent.setType(IMAGE_TYPE);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_SINGLE_PICTURE);
+                        getString(R.string.select_picture)), SELECT_SINGLE_PICTURE);
             }
         });
 
@@ -58,12 +58,12 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent();
-                intent.setType("image/*");
+                intent.setType(IMAGE_TYPE);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 // this line is different here !!
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_MULTIPLE_PICTURE);
+                        getString(R.string.select_picture)), SELECT_MULTIPLE_PICTURE);
             }
         });
 
@@ -74,7 +74,7 @@ public class MainActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_SINGLE_PICTURE) {
                 Uri selectedImageUri = data.getData();
-                selectedImagePath = getPath(selectedImageUri);
+                String selectedImagePath = getPath(selectedImageUri);
                 selectedImagePreview.setImageURI(selectedImageUri);
 //                displayPicture(selectedImagePath, selectedImagePreview);
             }
@@ -93,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
                     // for now just show the last picture
                     if( !list.isEmpty() ) {
                         Uri imageUri = (Uri) list.get(list.size() - 1);
-                        selectedImagePath = getPath(imageUri);
+                        String selectedImagePath = getPath(imageUri);
                         selectedImagePreview.setImageURI(imageUri);
 //                        displayPicture(selectedImagePath, selectedImagePreview);
                     }
