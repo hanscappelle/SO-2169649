@@ -12,8 +12,18 @@ Clone this project on your system and use Android studio to import this project 
 
     File > New Project > Import Project
 
+## Required permissions
+
+Don't forget to update the permissions of your app if you want file selection from SD card to work
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+## Credits
+
+The UserPicture class was originally implemented by user @hdante that I just converted to a utility
+class. For his profile on stackoverflow check this link: http://stackoverflow.com/users/1797000/hdante
 
 ## TODO
 
-* check support for Astro filemanager
-* Getting a single picture doesn't seem to be working on the newest Android version 4.4 (KitKat) anymore. The _data column from the query returns a null value
+* review the UserPicture class into a static utility class
+* fix the multiple image selection

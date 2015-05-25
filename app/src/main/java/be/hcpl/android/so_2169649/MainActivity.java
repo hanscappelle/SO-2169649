@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -73,10 +76,16 @@ public class MainActivity extends ActionBarActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_SINGLE_PICTURE) {
+
                 Uri selectedImageUri = data.getData();
-                String selectedImagePath = getPath(selectedImageUri);
-                selectedImagePreview.setImageURI(selectedImageUri);
-//                displayPicture(selectedImagePath, selectedImagePreview);
+                try {
+                    selectedImagePreview.setImageBitmap(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
+                } catch (IOException e) {
+                    Log.e(MainActivity.class.getSimpleName(), "Failed to load image", e);
+                }
+                // original code
+//                String selectedImagePath = getPath(selectedImageUri);
+//                selectedImagePreview.setImageURI(selectedImageUri);
             }
             else if (requestCode == SELECT_MULTIPLE_PICTURE) {
                 //And in the Result handling check for that parameter:
@@ -93,8 +102,15 @@ public class MainActivity extends ActionBarActivity {
                     // for now just show the last picture
                     if( !list.isEmpty() ) {
                         Uri imageUri = (Uri) list.get(list.size() - 1);
-                        String selectedImagePath = getPath(imageUri);
-                        selectedImagePreview.setImageURI(imageUri);
+
+                        try {
+                            selectedImagePreview.setImageBitmap(new UserPicture(imageUri, getContentResolver()).getBitmap());
+                        } catch (IOException e) {
+                            Log.e(MainActivity.class.getSimpleName(), "Failed to load image", e);
+                        }
+                        // original code
+//                        String selectedImagePath = getPath(imageUri);
+//                        selectedImagePreview.setImageURI(imageUri);
 //                        displayPicture(selectedImagePath, selectedImagePreview);
                     }
                 }
@@ -110,6 +126,7 @@ public class MainActivity extends ActionBarActivity {
      * helper to retrieve the path of an image URI
      */
     public String getPath(Uri uri) {
+
         // just some safety built in
         if( uri == null ) {
             // perform some logging or show user feedback
@@ -117,6 +134,7 @@ public class MainActivity extends ActionBarActivity {
             Log.d(MainActivity.class.getSimpleName(), "Failed to parse image path from image URI " + uri);
             return null;
         }
+
         // try to retrieve the image from the media store first
         // this will only work for images selected from gallery
         String[] projection = { MediaStore.Images.Media.DATA };
@@ -127,39 +145,33 @@ public class MainActivity extends ActionBarActivity {
             cursor.moveToFirst();
             return cursor.getString(column_index);
         }
-        // this is our fallback here
+        // this is our fallback here, thanks to the answer from @mad indicating this is needed for
+        // working code based on images selected using other file managers
         return uri.getPath();
     }
 
-    /**
-     * helper to scale down image before display to prevent render errors:
-     * "Bitmap too large to be uploaded into a texture"
-     */
-    private void displayPicture(String imagePath, ImageView destination) {
-//        int targetW = destination.getWidth();
-//        int targetH = destination.getHeight();
 
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-//        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = 1;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-//        destination.setImageBitmap(bitmap);
-
-        Bitmap scaled = Bitmap.createScaledBitmap(bitmap, photoH > photoW ? 640 : 480, photoW > photoH ? 640 : 480, true);
-        destination.setImageBitmap(scaled);
-    }
+//    /**
+//     * helper to scale down image before display to prevent render errors:
+//     * "Bitmap too large to be uploaded into a texture"
+//     */
+//    private void displayPicture(String imagePath, ImageView imageView) {
+//
+//        // from http://stackoverflow.com/questions/22633638/prevent-bitmap-too-large-to-be-uploaded-into-a-texture-android
+//
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inSampleSize = 4;
+//
+//        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+//        int height = bitmap.getHeight(), width = bitmap.getWidth();
+//
+//        if (height > 1280 && width > 960){
+//            Bitmap imgbitmap = BitmapFactory.decodeFile(imagePath, options);
+//            imageView.setImageBitmap(imgbitmap);
+//        } else {
+//            imageView.setImageBitmap(bitmap);
+//        }
+//    }
 
 
 }
