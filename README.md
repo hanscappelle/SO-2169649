@@ -11,3 +11,9 @@ Answer to the SO question at http://stackoverflow.com/questions/2169649/get-pick
 Clone this project on your system and use Android studio to import this project using menu options:
 
     File > New Project > Import Project
+
+
+## TODO
+
+* check support for Astro filemanager
+* Getting a single picture doesn't seem to be working on the newest Android version 4.4 (KitKat) anymore. The _data column from the query returns a null value

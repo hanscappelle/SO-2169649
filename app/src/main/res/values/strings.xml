@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SO-2169649</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="msg_failed_to_get_picture">Failed to get image</string>
+    <string name="lbl_pick_single_image">Select single image</string>
+    <string name="lbl_pick_multiple_image">Select multiple images</string>
+    <string name="txt_info">Quick sample for selecting images on Android</string>
+    <string name="msg_failed_to_get_intent_data">Failed to get intent data</string>
+</resources>
